@@ -355,7 +355,7 @@ async function addLogoLink() {
 
 async function applyCFTheme(themeCFReference) {
   if (!themeCFReference) return;
-  
+  /*
   // Configuration
   const CONFIG = {
     WRAPPER_SERVICE_URL: 'https://prod-31.westus.logic.azure.com:443/workflows/2660b7afa9524acbae379074ae38501e/triggers/manual/paths/invoke',
@@ -425,6 +425,7 @@ async function applyCFTheme(themeCFReference) {
   } catch (error) {
     console.error('Error applying theme:', error);
   }
+  */
 }
 
 
