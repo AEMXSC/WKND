@@ -5,7 +5,7 @@ import {
 
 export const PATH_PREFIX = '/language-masters';
 export const TAG_ROOT = 'wknd-universal:';
-export const SITE_NAME = 'wknd-universal';
+//export const SITE_NAME = 'wknd-universal';
 export const SUPPORTED_LANGUAGES = ['en'];
 export const INTERNAL_PAGES = ['/footer', '/nav', '/fragments', '/data', '/drafts'];
 let lang;
