@@ -4,7 +4,7 @@ import {
   getNavigationMenu, formatNavigationJsonData,
 } from './navigation.js';
 import {
-  getLanguage, TAG_ROOT, SITE_NAME, PATH_PREFIX, fetchLanguageNavigation,
+  getLanguage, getSiteName, TAG_ROOT, PATH_PREFIX, fetchLanguageNavigation,
 } from '../../scripts/utils.js';
 import {
   button,
@@ -164,7 +164,7 @@ function handleEnterKey(event) {
   if (event.key !== 'Enter') return;
   const inputValue = document.querySelector('.search-container input').value;
   //const url = (listOfAllPlaceholdersData.searchRedirectUrl || 'https://www.worldbank.org/en/search?q=') + inputValue;
-  const url = '/content/wknd-universal/language-masters/search-results.html?q=' + inputValue;
+  const url = `/content/${getSiteName()}/language-masters/search-results.html?q=`+ inputValue;
   if (inputValue) window.location.href = url;
 }
 
@@ -222,7 +222,7 @@ function createSearchBox() {
     searchIcon.addEventListener('click', () => {
       if (searchInputBox.value) {
         ///window.location.href = (listOfAllPlaceholdersData.searchRedirectUrl || '<sitename>/en/search?q=') + searchInputBox.value;
-        window.location.href = '/content/wknd-universal/language-masters/search-results.html?q=' + searchInputBox.value;
+        window.location.href = `/content/${getSiteName()}/language-masters/search-results.html?q=` + searchInputBox.value;
       }
     });
 
@@ -420,7 +420,7 @@ export default async function decorate(block) {
   const langCode = getLanguage();
   const navPath = navMeta
     ? new URL(navMeta, window.location).pathname
-    : `/content/${SITE_NAME}${PATH_PREFIX}/nav`;
+    : `/content/${getSiteName()}${PATH_PREFIX}/nav`;
 
   
   //const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';

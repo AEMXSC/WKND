@@ -1,8 +1,7 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-
 import {
-  getLanguage, TAG_ROOT, SITE_NAME, PATH_PREFIX, fetchLanguageNavigation,
+  getLanguage, getSiteName, TAG_ROOT, PATH_PREFIX, fetchLanguageNavigation,
 } from '../../scripts/utils.js';
 
 /**
@@ -12,21 +11,10 @@ import {
 export default async function decorate(block) {
   const footerMeta = getMetadata('footer');
   const langCode = getLanguage();
+  
   const footerPath = footerMeta
     ? new URL(footerMeta, window.location).pathname
-    : `/content/${SITE_NAME}${PATH_PREFIX}/footer`;
-
-  /*
-  // load footer as fragment
-  const footerMeta = getMetadata('footer');
-  //const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  //console.log("pathSegments footer: ", pathSegments);
-  const parentPath = pathSegments.length > 2 ? `/${pathSegments.slice(0, 3).join('/')}` : '/';
-  //console.log("parentPath footer: ", parentPath);
-  const footerPath = parentPath=='/' ? footerMeta ? new URL(footerMeta, window.location).pathname : '/footer' : footerMeta ? new URL(footerMeta, window.location).pathname : parentPath+'/footer';
-  //console.log("footerPath footer: ", footerPath);
-  */
+    : `/content/${getSiteName()}${PATH_PREFIX}/footer`;
   
   const fragment = await loadFragment(footerPath);
 

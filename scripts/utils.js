@@ -45,6 +45,19 @@ export function getInheritedPageProperties() {
   };
 }
 
+/**
+ * Extracts the site name from the current URL pathname
+ * @description Extracts the site name from paths following the pattern /content/site-name/...
+ * For example:
+ * - From "/content/wknd-universal/language-masters/en/path" returns "wknd-universal"
+ * - From "/content/wknd-universal/language-masters/en/path/to/content.html" returns "wknd-universal"
+ * @returns {string} The site name extracted from the path, or empty string if not found
+ */
+export function getSiteName() {
+  const { pathname } = window.location;
+  const siteName = pathname.split('/content/')[1]?.split('/')[0] || '';
+  return siteName;
+}
 
 /**
  * Process current pathname and return details for use in language switching
