@@ -14,7 +14,7 @@ import {
   a,
 } from '../../scripts/dom-helpers.js';
 
-import { fetchLanguagePlaceholders } from '../../scripts/scripts.js';
+import { isAuthorEnvironment, fetchLanguagePlaceholders } from '../../scripts/scripts.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -355,7 +355,7 @@ async function addLogoLink() {
 
 async function applyCFTheme(themeCFReference) {
   if (!themeCFReference) return;
-  /*
+  
   // Configuration
   const CONFIG = {
     WRAPPER_SERVICE_URL: 'https://prod-31.westus.logic.azure.com:443/workflows/2660b7afa9524acbae379074ae38501e/triggers/manual/paths/invoke',
@@ -369,7 +369,7 @@ async function applyCFTheme(themeCFReference) {
     const hostname = getMetadata('hostname');
     const aemauthorurl = getMetadata('authorurl') || '';
     const aempublishurl = hostname?.replace('author', 'publish')?.replace(/\/$/, '');
-    const isAuthorEnvironment = window?.location?.origin?.includes('author');
+    const isAuthorEnvironment = isAuthorEnvironment;
 
     // Prepare request configuration based on environment
     const requestConfig = isAuthorEnvironment 
@@ -425,7 +425,7 @@ async function applyCFTheme(themeCFReference) {
   } catch (error) {
     console.error('Error applying theme:', error);
   }
-  */
+  
 }
 
 
