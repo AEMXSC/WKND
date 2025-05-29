@@ -354,6 +354,79 @@ async function addLogoLink() {
 
 
 async function applyCFTheme(themeCFReference) {
+  if (!themeCFReference) return;
+  
+  // Configuration
+  const CONFIG = {
+    WRAPPER_SERVICE_URL: 'https://prod-31.westus.logic.azure.com:443/workflows/2660b7afa9524acbae379074ae38501e/triggers/manual/paths/invoke',
+    WRAPPER_SERVICE_PARAMS: 'api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kfcQD5S7ovej9RHdGZFVfgvA-eEqNlb6r_ukuByZ64o',
+    GRAPHQL_QUERY: '/graphql/execute.json/wknd-universal/BrandThemeByPath',
+    EXCLUDED_THEME_KEYS: new Set(['brandSite', 'brandLogo'])
+  };
+  
+  try {
+    const decodedThemeCFReference = decodeURIComponent(themeCFReference);
+    const hostname = getMetadata('hostname');
+    const aemauthorurl = getMetadata('authorurl') || '';
+    const aempublishurl = hostname?.replace('author', 'publish')?.replace(/\/$/, '');
+    const isAuthorEnvironment = window?.location?.origin?.includes('author');
+
+    // Prepare request configuration based on environment
+    const requestConfig = isAuthorEnvironment 
+      ? {
+          url: `${aemauthorurl}${CONFIG.GRAPHQL_QUERY};path=${decodedThemeCFReference};ts=${Date.now()}`,
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      : {
+          url: `${CONFIG.WRAPPER_SERVICE_URL}?${CONFIG.WRAPPER_SERVICE_PARAMS}`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            graphQLPath: `${aempublishurl}${CONFIG.GRAPHQL_QUERY}`,
+            cfPath: decodedThemeCFReference,
+            variation: "master"
+          })
+        };
+
+    // Fetch theme data
+    const response = await fetch(requestConfig.url, {
+      method: requestConfig.method,
+      headers: requestConfig.headers,
+      ...(requestConfig.body && { body: requestConfig.body })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentfragment = await response.json();
+    const themeColors = contentfragment?.data?.brandThemeByPath?.item;
+
+    if (!themeColors) {
+      console.warn('No theme data found in the response');
+      return;
+    }
+
+    // Apply theme colors to CSS variables
+    const cssVariables = Object.entries(themeColors)
+      .filter(([key, value]) => 
+        value != null && !CONFIG.EXCLUDED_THEME_KEYS.has(key)
+      )
+      .map(([key, value]) => `  --brand-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`)
+      .join('\n');
+
+    if (cssVariables) {
+      const styleElement = document.createElement('style');
+      styleElement.textContent = `:root {\n${cssVariables}\n}`;
+      document.head.appendChild(styleElement);
+    }
+
+  } catch (error) {
+    console.error('Error applying theme:', error);
+  }
+  
+  /*
   if(themeCFReference){
       const decodedThemeCFReference = decodeURIComponent(themeCFReference);
 
@@ -362,44 +435,87 @@ async function applyCFTheme(themeCFReference) {
       const aempublishurl = hostname?.replace('author', 'publish')?.replace(/\/$/, '');
       const persistedQueryForTheme = '/graphql/execute.json/wknd-universal/BrandThemeByPath';
 
-      const url = window?.location?.origin?.includes('author')
-      ? `${aemauthorurl}${persistedQueryForTheme};path=${decodedThemeCFReference};ts=${
-          Math.random() * 1000
-        }`
-      : `${aempublishurl}${persistedQueryForTheme};path=${decodedThemeCFReference};ts=${
+      const wrapperServiceURL = "https://prod-31.westus.logic.azure.com:443/workflows/2660b7afa9524acbae379074ae38501e/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kfcQD5S7ovej9RHdGZFVfgvA-eEqNlb6r_ukuByZ64o";
+      
+    
+      const url = '';
+      if(window?.location?.origin?.includes('author')){
+        url = `${aemauthorurl}${persistedQueryForTheme};path=${decodedThemeCFReference};ts=${
           Math.random() * 1000
         }`;
-
-      const cfReq = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-        .then((response) => response.json())
-        .then((contentfragment) => {
-          if (contentfragment.data) {
-            if (contentfragment.data?.brandThemeByPath?.item) {
-              const themeColors = contentfragment.data.brandThemeByPath.item;
-              const styleElement = document.createElement('style');
-              const excludedKeys = new Set(['brandSite', 'brandLogo']);
-              const cssVariables = Object.entries(themeColors)
-                .filter(([key, value]) => 
-                  value !== null && 
-                  value !== undefined && 
-                  !excludedKeys.has(key)
-                )
-                .map(([key, value]) => `  --brand-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`)
-                .join('\n');
-
-              if (cssVariables) {
-                styleElement.textContent = `:root {\n${cssVariables}\n}`;
-                document.head.appendChild(styleElement);
+          const cfReq = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then((response) => response.json())
+          .then((contentfragment) => {
+            if (contentfragment.data) {
+              if (contentfragment.data?.brandThemeByPath?.item) {
+                const themeColors = contentfragment.data.brandThemeByPath.item;
+                const styleElement = document.createElement('style');
+                const excludedKeys = new Set(['brandSite', 'brandLogo']);
+                const cssVariables = Object.entries(themeColors)
+                  .filter(([key, value]) => 
+                    value !== null && 
+                    value !== undefined && 
+                    !excludedKeys.has(key)
+                  )
+                  .map(([key, value]) => `  --brand-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`)
+                  .join('\n');
+  
+                if (cssVariables) {
+                  styleElement.textContent = `:root {\n${cssVariables}\n}`;
+                  document.head.appendChild(styleElement);
+                }
               }
             }
-          }
+          });
+      } else {
+        url = wrapperServiceURL;
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var raw = JSON.stringify({
+          "graphQLPath": "https://publish-p153659-e1620914.adobeaemcloud.com/graphql/execute.json/wknd-universal/BrandThemeByPath",
+          "cfPath": "/content/dam/wknd-universal/fragments/brand-themes/red-theme",
+          "variation": "master"
         });
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        fetch("https://prod-31.westus.logic.azure.com:443/workflows/2660b7afa9524acbae379074ae38501e/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kfcQD5S7ovej9RHdGZFVfgvA-eEqNlb6r_ukuByZ64o", requestOptions)
+        .then((response) => response.json())
+          .then((contentfragment) => {
+            if (contentfragment.data) {
+              if (contentfragment.data?.brandThemeByPath?.item) {
+                const themeColors = contentfragment.data.brandThemeByPath.item;
+                const styleElement = document.createElement('style');
+                const excludedKeys = new Set(['brandSite', 'brandLogo']);
+                const cssVariables = Object.entries(themeColors)
+                  .filter(([key, value]) => 
+                    value !== null && 
+                    value !== undefined && 
+                    !excludedKeys.has(key)
+                  )
+                  .map(([key, value]) => `  --brand-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`)
+                  .join('\n');
+  
+                if (cssVariables) {
+                  styleElement.textContent = `:root {\n${cssVariables}\n}`;
+                  document.head.appendChild(styleElement);
+                }
+              }
+            }
+          });
+      }
+    
     }
+  */
 }
 
 
