@@ -1,7 +1,7 @@
 # WKND Universal Demo
 
 
-## Environments
+## Environment Access:
 - Preview: https://main--{repo}--{owner}.aem.page/
 - Live: https://main--{repo}--{owner}.aem.live/
 
