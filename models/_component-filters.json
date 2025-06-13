@@ -8,17 +8,21 @@
    {
     "id": "section",
     "components": [
-      "text",
-      "image",
       "button",
-      "title",
-      "hero",
       "cards",
+      "carousel",
       "columns",
-      "fragment",
       "contentfragment",
       "dm-asset",
+      "dm-template",
+      "fragment",
+      "hero",
+      "iframe",
+      "image",
       "search",
+      "teaser",
+      "text",
+      "title",
       "video"
     ]
   },
@@ -37,11 +41,12 @@
   {
     "id": "column",
     "components": [
-      "text",
-      "image",
       "button",
-      "title",
       "dm-asset",
+      "dm-template",
+      "image",
+      "text",      
+      "title",
       "video"
     ]
   }
