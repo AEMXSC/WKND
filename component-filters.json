@@ -16,6 +16,8 @@
       "dm-asset",
       "dm-template",
       "fragment",
+      "form",
+      "embed-adaptive-form",
       "hero",
       "image",
       "teaser",
@@ -54,6 +56,35 @@
       "title",
       "video",
       "separator"
+    ]
+  },
+  {
+    "id": "form",
+    "components": [
+      "captcha",
+      "checkbox",
+      "checkbox-group",
+      "date-input",
+      "drop-down",
+      "email",
+      "file-input",
+      "form-accordion",
+      "form-button",
+      "form-fragment",
+      "form-image",
+      "form-modal",
+      "form-reset-button",
+      "form-submit-button",
+      "number-input",
+      "panel",
+      "password",
+      "plain-text",
+      "radio-group",
+      "rating",
+      "telephone-input",
+      "text-input",
+      "tnc",
+      "wizard"
     ]
   }
 ]
