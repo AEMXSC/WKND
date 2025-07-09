@@ -160,7 +160,7 @@
     {
       "id": "section",
       "components": [
-	"button",
+	      "button",
       	"cards",
       	"carousel",
       	"columns",
@@ -174,7 +174,9 @@
       	"teaser",
       	"text",
       	"title",
-      	"video"
+      	"video",
+        "form",
+        "embed-adaptive-form"
       ]
     }
   ]

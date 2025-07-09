@@ -73,9 +73,11 @@ function focusNavSection() {
  * @param {Boolean} expanded Whether the element should be expanded or collapsed
  */
 function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
+  if(null != sections){
+    sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
+      section.setAttribute('aria-expanded', expanded);
+    });
+  }
 }
 
 
