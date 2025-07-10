@@ -4,6 +4,10 @@
 export default function decorate(block) {
   console.log(block);
 
+  // this shouldHide logic is temporary till the time DM rendering on published live site is resolved.
+  const hostname = window.location.hostname;
+  const shouldHide = hostname.includes("aem.live") || hostname.includes("aem.page");
+
   let deliveryType = Array.from(block.children)[0]?.textContent?.trim();
   let inputs = block.querySelectorAll('.dynamicmedia-image > div');
       
@@ -19,7 +23,7 @@ export default function decorate(block) {
   let flip = inputs[4]?.textContent?.trim();
   let altText = inputs[6].textContent?.trim();
 
-  if(deliveryType != "na"){  
+  if(deliveryType != "na" && shouldHide == false){  
       if(deliveryType === 'dm'){
           // Ensure S7 is loaded
           if (typeof s7responsiveImage !== 'function') {
