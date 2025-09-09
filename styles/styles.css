@@ -548,13 +548,7 @@ main picture:hover::before {
 
 
 /* Parallax effect - Start */
-main {
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-perspective: 1px;
-  perspective: 1px;
-}
+
 /*main .hero-container {
   -webkit-transform: translateZ(-1px) scale(2);
   transform: translateZ(-1px) scale(2);
